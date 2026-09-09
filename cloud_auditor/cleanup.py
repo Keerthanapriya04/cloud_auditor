@@ -1,15 +1,3 @@
-"""
-Safe cleanup execution.
-
-Design principles:
-  - Dry-run by default. Nothing is ever deleted/stopped unless --execute is
-    explicitly passed on the CLI.
-  - Per-resource confirmation unless --yes (auto-approve) is passed.
-  - Every action is logged to an audit trail file so cleanups are traceable.
-  - AWS cleanup calls boto3 directly (not shell-out) for reliability;
-    GCP cleanup calls the Compute client library directly as well.
-"""
-
 import json
 import subprocess
 from datetime import datetime, timezone
