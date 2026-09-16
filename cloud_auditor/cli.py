@@ -23,4 +23,26 @@ app.add_typer(cleanup_app, name="cleanup")
 
 console = Console()
 
+def _output_results(summary: AuditSummary, output: str, output_file: Optional[str], show_breakdown: bool):
+    if output == "table":
+        report_mod.render_table(summary, console)
+        if show_breakdown:
+            report_mod.render_cost_breakdown(summary, console)
+    elif output == "json":
+        if output_file:
+            path = report_mod.export_json(summary, output_file)
+            console.print(f"[green]✔ JSON report written to {path}[/green]")
+        else:
+            import json
+            console.print_json(json.dumps(summary.to_dict(), default=str))
+    elif output == "yaml":
+        if output_file:
+            path = report_mod.export_yaml(summary, output_file)
+            console.print(f"[green]✔ YAML report written to {path}[/green]")
+        else:
+            import yaml
+            console.print(yaml.safe_dump(summary.to_dict(), sort_keys=False))
+    else:
+        console.print(f"[red]Unknown output format: {output}[/red]")
+        raise typer.Exit(code=1)
 
