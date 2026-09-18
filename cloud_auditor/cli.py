@@ -95,3 +95,13 @@ def audit_gcp(
     cleanup_script: Optional[str] = typer.Option(
         None, "--cleanup-script", help="Also write a commented-out cleanup.sh with all fix commands.")
             ): 
+    class AuditSummary:
+    """Aggregated results of an audit run."""
+
+    findings: list = field(default_factory=list)
+
+    @property
+    def total_findings(self) -> int:
+        return len(self.findings)
+
+
