@@ -15,7 +15,9 @@ Checks implemented:
 
 Each check degrades gracefully: if the AWS API call fails (missing
 permission, region not enabled, etc.) the scanner logs a warning via the
-supplied `
+supplied `console` and continues with the remaining checks instead of
+crashing the whole audit.
+"""
 
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional

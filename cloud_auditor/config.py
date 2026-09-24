@@ -1,28 +1,3 @@
-def init_config(
-    path: Optional[str] = typer.Option(None, "--path", help="Where to write config.yaml (default: ~/.cloud_auditor/config.yaml)."),
-):
-    """Write out an editable default config.yaml (thresholds, pricing, regions)."""
-    written = write_default_config(path)
-    console.print(f"[green]✔ Default config written to {written}[/green]")
-    console.print("Edit thresholds, pricing, and regions there, then pass --config to point at it if you moved it.")
-
-
-@app.command("version")
-def version():
-    """Show the tool version."""
-    from . import __version__
-    console.print(f"cloud-auditor v{__version__}")
-
-
-def main():
-    app()
-
-
-if __name__ == "__main__":
-    main()
-
-
-config,py
 """
 Configuration loading for the auditor.
 
@@ -82,3 +57,32 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "default_format": "table",
     },
 }
+
+
+def _deep_merge(base: dict, override: dict) -> dict:
+    result = dict(base)
+    for key, value in override.items():
+        if isinstance(value, dict) and isinstance(result.get(key), dict):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+
+def load_config(config_path: str = None) -> Dict[str, Any]:
+    """Load config.yaml if present and merge over the built-in defaults."""
+    path = Path(config_path) if config_path else DEFAULT_CONFIG_PATH
+    if path.exists():
+        with open(path, "r") as f:
+            user_config = yaml.safe_load(f) or {}
+        return _deep_merge(DEFAULT_CONFIG, user_config)
+    return DEFAULT_CONFIG
+
+
+def write_default_config(config_path: str = None) -> Path:
+    """Write out the default config file so users can edit it."""
+    path = Path(config_path) if config_path else DEFAULT_CONFIG_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as f:
+        yaml.safe_dump(DEFAULT_CONFIG, f, sort_keys=False)
+    return path
