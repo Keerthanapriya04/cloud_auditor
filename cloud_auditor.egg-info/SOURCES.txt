@@ -1,0 +1,17 @@
+README.md
+setup.py
+cloud_auditor/__init__.py
+cloud_auditor/cleanup.py
+cloud_auditor/cli.py
+cloud_auditor/config.py
+cloud_auditor/models.py
+cloud_auditor/report.py
+cloud_auditor.egg-info/PKG-INFO
+cloud_auditor.egg-info/SOURCES.txt
+cloud_auditor.egg-info/dependency_links.txt
+cloud_auditor.egg-info/entry_points.txt
+cloud_auditor.egg-info/requires.txt
+cloud_auditor.egg-info/top_level.txt
+cloud_auditor/providers/__init__.py
+cloud_auditor/providers/aws_provider.py
+cloud_auditor/providers/gcp_provider.py
